@@ -8,6 +8,9 @@ Currently supports
 
   - dashboards
   - monitors
+  - SLOs
+  - synthetics
+  - notebooks
 
 Additional features may be built out over time.
 
@@ -36,7 +39,7 @@ gem install datadog_backup
 ![demo](images/demo.gif)
 
 ```
-DD_API_KEY=example123 DD_APP_KEY=example123 datadog_backup <backup|diffs|restore> [--backup-dir /path/to/backups] [--debug] [--monitors-only] [--dashboards-only] [--diff-format color|html|html_simple] [--no-color] [--json]
+DD_API_KEY=example123 DD_APP_KEY=example123 datadog_backup <backup|diffs|restore> [--backup-dir /path/to/backups] [--debug] [--monitors-only] [--dashboards-only] [--slos-only] [--synthetics-only] [--notebooks-only] [--diff-format color|html|html_simple] [--no-color] [--json]
 ```
 
 ```
@@ -65,8 +68,16 @@ parameter            | description                                              
 --debug              | log debug and above                                                                                                           | info
 --quiet              | only show errors and above                                                                                                    | info
 --backup-dir PATH    | path to the directory to backup to or restore from                                                                            | `./backup/`
---monitors-only      | only backup monitors                                                                                                          | backup monitors and dashboards
---dashboards-only    | only backup dashboards                                                                                                        | backup monitors and dashboards
+--monitors-only      | only backup monitors
+                     | backup dashboards, monitors, SLOs, synthetics, and notebooks
+--dashboards-only    | only backup dashboards
+                     | backup dashboards, monitors, SLOs, synthetics, and notebooks
+--slos-only          | only backup SLOs
+                     | backup dashboards, monitors, SLOs, synthetics, and notebooks
+--synthetics-only    | only backup synthetic tests
+                     | backup dashboards, monitors, SLOs, synthetics, and notebooks
+--notebooks-only     | only backup notebooks
+                     | backup dashboards, monitors, SLOs, synthetics, and notebooks
 --json               | format backups as JSON instead of YAML. Does not impact `diffs` nor `restore`, but do not mix formats in the same backup-dir. | YAML
 --no-color           | removes colored output from diff format
 --diff-format FORMAT | one of `color`, `html_simple`, `html`                                                                                         | `color`

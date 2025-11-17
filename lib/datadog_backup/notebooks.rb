@@ -8,7 +8,7 @@ module DatadogBackup
     end
 
     def backup
-      LOGGER.info("Starting diffs on #{::DatadogBackup::ThreadPool::TPOOL.max_length} threads")
+      LOGGER.info("Starting backup on #{::DatadogBackup::ThreadPool::TPOOL.max_length} threads")
       futures = all.map do |notebook|
         Concurrent::Promises.future_on(::DatadogBackup::ThreadPool::TPOOL, notebook) do |book|
           id = book[id_keyname]
@@ -25,7 +25,7 @@ module DatadogBackup
     def get_by_id(id)
       begin
         notebook = except(get(id))
-      rescue Faraday::ResourceNotFound => e
+      rescue Faraday::ResourceNotFound
         notebook = {}
       end
       except(notebook)
@@ -37,11 +37,9 @@ module DatadogBackup
     end
 
     def create(body)
-      headers = {}
       response = api_service.post(
         "/api/#{api_version}/#{api_resource_name}",
-        json_api_payload(body, include_id: false),
-        headers
+        json_api_payload(body, include_id: false)
       )
       resbody = body_with_2xx(response)
       LOGGER.warn "Successfully created #{resbody.fetch(id_keyname)} in datadog."
@@ -51,11 +49,9 @@ module DatadogBackup
     end
 
     def update(id, body)
-      headers = {}
       response = api_service.put(
         "/api/#{api_version}/#{api_resource_name}/#{id}",
-        json_api_payload(body, include_id: true),
-        headers
+        json_api_payload(body, include_id: true)
       )
       resbody = body_with_2xx(response)
       LOGGER.warn "Successfully restored #{id} to datadog."

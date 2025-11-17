@@ -17,8 +17,9 @@ def fatal(message)
 end
 
 def options_valid?(options)
-  %w[backup diffs restore].include?(options[:action])
-  %w[DD_API_KEY DD_APP_KEY].all? { |key| ENV.fetch(key, nil) }
+  valid_action = %w[backup diffs restore].include?(options[:action])
+  have_keys = %w[DD_API_KEY DD_APP_KEY].all? { |k| ENV[k] && !ENV[k].empty? }
+  valid_action && have_keys
 end
 
 def prereqs(defaults) # rubocop:disable Metrics/AbcSize

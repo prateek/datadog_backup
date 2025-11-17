@@ -17,8 +17,9 @@ def fatal(message)
 end
 
 def options_valid?(options)
-  %w[backup diffs restore].include?(options[:action])
-  %w[DD_API_KEY DD_APP_KEY].all? { |key| ENV.fetch(key, nil) }
+  valid_action = %w[backup diffs restore].include?(options[:action])
+  have_keys = %w[DD_API_KEY DD_APP_KEY].all? { |k| ENV[k] && !ENV[k].empty? }
+  valid_action && have_keys
 end
 
 def prereqs(defaults) # rubocop:disable Metrics/AbcSize
@@ -54,6 +55,9 @@ def prereqs(defaults) # rubocop:disable Metrics/AbcSize
     opts.on('--synthetics-only') do
       result[:resources] = [DatadogBackup::Synthetics]
     end
+    opts.on('--notebooks-only') do
+      result[:resources] = [DatadogBackup::Notebooks]
+    end
     opts.on(
       '--json',
       'format backups as JSON instead of YAML. Does not impact `diffs` nor `restore`, but do not mix formats in the same backup-dir.'
@@ -86,7 +90,13 @@ defaults = {
   action: nil,
   backup_dir: File.join(ENV.fetch('PWD'), 'backup'),
   diff_format: :color,
-  resources: [DatadogBackup::Dashboards, DatadogBackup::Monitors, DatadogBackup::SLOs, DatadogBackup::Synthetics],
+  resources: [
+    DatadogBackup::Dashboards,
+    DatadogBackup::Monitors,
+    DatadogBackup::SLOs,
+    DatadogBackup::Synthetics,
+    DatadogBackup::Notebooks
+  ],
   output_format: :yaml,
   force_restore: false,
   disable_array_sort: false

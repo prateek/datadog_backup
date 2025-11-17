@@ -8,7 +8,7 @@ module DatadogBackup
     end
 
     def backup
-      LOGGER.info("Starting diffs on #{::DatadogBackup::ThreadPool::TPOOL.max_length} threads")
+      LOGGER.info("Starting backup on #{::DatadogBackup::ThreadPool::TPOOL.max_length} threads")
       futures = all.map do |dashboard|
         Concurrent::Promises.future_on(::DatadogBackup::ThreadPool::TPOOL, dashboard) do |board|
           id = board[id_keyname]

@@ -204,4 +204,24 @@ describe DatadogBackup::SLOs do
 
     it { is_expected.to eq({ a: :b }) }
   end
+
+  context 'when include_modified_at flag is enabled' do
+    let(:slos_with_flag) do
+      slos = described_class.new(
+        action: 'backup',
+        backup_dir: tempdir,
+        output_format: :json,
+        resources: [],
+        include_modified_at: true
+      )
+      allow(slos).to receive(:api_service).and_return(api_client_double)
+      slos
+    end
+
+    describe '#except' do
+      subject { slos_with_flag.except({ :a => :b, 'modified_at' => :c, 'url' => :d }) }
+
+      it { is_expected.to eq({ a: :b, 'modified_at' => :c }) }
+    end
+  end
 end

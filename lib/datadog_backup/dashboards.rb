@@ -33,7 +33,9 @@ module DatadogBackup
 
     def initialize(options)
       super(options)
-      @banlist = %w[modified_at url].freeze
+      base_banlist = %w[modified_at url]
+      base_banlist -= ['modified_at'] if include_modified_at
+      @banlist = base_banlist.freeze
     end
 
     private

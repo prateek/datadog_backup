@@ -21,7 +21,9 @@ module DatadogBackup
 
     def initialize(options)
       super(options)
-      @banlist = %w[creator created_at modified_at monitor_id public_id].freeze
+      base_banlist = %w[creator created_at modified_at monitor_id public_id]
+      base_banlist -= ['modified_at'] if include_modified_at
+      @banlist = base_banlist.freeze
     end
 
     def create(body)

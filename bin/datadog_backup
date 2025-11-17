@@ -76,6 +76,9 @@ def prereqs(defaults) # rubocop:disable Metrics/AbcSize
     opts.on('--disable-array-sort', 'Do not sort array elements, to preserver order of dashboard widgets.') do
       result[:disable_array_sort] = true
     end
+    opts.on('--include-modified-at', 'Include modified_at fields in backups where applicable') do
+      result[:include_modified_at] = true
+    end
   end
   options.parse!
 
@@ -99,7 +102,8 @@ defaults = {
   ],
   output_format: :yaml,
   force_restore: false,
-  disable_array_sort: false
+  disable_array_sort: false,
+  include_modified_at: false
 }
 
 DatadogBackup::Cli.new(prereqs(defaults)).run!

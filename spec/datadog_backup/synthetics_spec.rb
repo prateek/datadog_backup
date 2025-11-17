@@ -255,4 +255,26 @@ describe DatadogBackup::Synthetics do
       end
     end
   end
+
+  context 'when include_modified_at flag is enabled' do
+    let(:synthetics_with_flag) do
+      synthetics = described_class.new(
+        action: 'backup',
+        backup_dir: tempdir,
+        output_format: :json,
+        resources: [],
+        include_modified_at: true
+      )
+      allow(synthetics).to receive(:api_service).and_return(api_client_double)
+      synthetics
+    end
+
+    describe '#except' do
+      it 'retains modified_at when present' do
+        expect(
+          synthetics_with_flag.except({ 'modified_at' => 123, 'creator' => {}, 'public_id' => 'x' })
+        ).to eq({ 'modified_at' => 123 })
+      end
+    end
+  end
 end

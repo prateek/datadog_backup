@@ -33,7 +33,9 @@ module DatadogBackup
 
     def initialize(options)
       super(options)
-      @banlist = %w[modified_at url].freeze
+      base_banlist = %w[modified_at url]
+      base_banlist -= ['modified_at'] if include_modified_at
+      @banlist = base_banlist.freeze
     end
 
     # Return the Faraday body from a response with a 2xx status code, otherwise raise an error

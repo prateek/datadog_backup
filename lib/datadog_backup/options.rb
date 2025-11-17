@@ -35,5 +35,9 @@ module DatadogBackup
     def disable_array_sort
       @options[:disable_array_sort]
     end
+
+    def include_modified_at
+      @options[:include_modified_at]
+    end
   end
 end

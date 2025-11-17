@@ -102,4 +102,24 @@ describe DatadogBackup::Dashboards do
 
     it { is_expected.to eq({ a: :b }) }
   end
+
+  context 'when include_modified_at flag is enabled' do
+    let(:dashboards_with_flag) do
+      dashboards = described_class.new(
+        action: 'backup',
+        backup_dir: tempdir,
+        output_format: :json,
+        resources: [],
+        include_modified_at: true
+      )
+      allow(dashboards).to receive(:api_service).and_return(api_client_double)
+      dashboards
+    end
+
+    describe '#except' do
+      subject { dashboards_with_flag.except({ :a => :b, 'modified_at' => :c, 'url' => :d }) }
+
+      it { is_expected.to eq({ a: :b, 'modified_at' => :c }) }
+    end
+  end
 end
